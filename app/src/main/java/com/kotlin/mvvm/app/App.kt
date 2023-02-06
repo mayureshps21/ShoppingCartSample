@@ -9,4 +9,9 @@ import dagger.hilt.android.HiltAndroidApp
  */
 
 @HiltAndroidApp
-open class App : Application()
+open class App : Application(){
+    override fun onCreate() {
+        super.onCreate()
+
+    }
+}
