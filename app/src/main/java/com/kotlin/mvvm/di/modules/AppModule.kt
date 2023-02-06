@@ -6,8 +6,6 @@ import com.kotlin.mvvm.BuildConfig
 import com.kotlin.mvvm.repository.api.ApiServices
 import com.kotlin.mvvm.repository.api.network.LiveDataCallAdapterFactoryForRetrofit
 import com.kotlin.mvvm.repository.db.AppDatabase
-import com.kotlin.mvvm.repository.db.countries.CountriesDao
-import com.kotlin.mvvm.repository.db.news.NewsDao
 import com.kotlin.mvvm.repository.db.shoppingcart.UserSessionDao
 import dagger.Module
 import dagger.Provides
@@ -57,17 +55,4 @@ object AppModule {
     @Provides
     fun provideUserSessionDao(db: AppDatabase): UserSessionDao = db.userSessionDao()
 
-    /**
-     * Provides NewsArticlesDao an object to access NewsArticles table from Database
-     */
-    @Singleton
-    @Provides
-    fun provideUserDao(db: AppDatabase): NewsDao = db.newsArticlesDao()
-
-    /**
-     * Provides CountriesDao an object to access Countries table from Database
-     */
-    @Singleton
-    @Provides
-    fun provideCountriesDao(db: AppDatabase): CountriesDao = db.countriesDao()
 }
