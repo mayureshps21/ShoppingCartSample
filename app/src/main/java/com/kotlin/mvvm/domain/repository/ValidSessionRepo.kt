@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ValidSessionRepo {
     fun checkIfUserValid():Flow<String>
-    fun refreshSession()
+    fun refreshSession():Flow<String>
 }

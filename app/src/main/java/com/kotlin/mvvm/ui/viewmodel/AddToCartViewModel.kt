@@ -1,5 +1,6 @@
 package com.kotlin.mvvm.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlin.mvvm.domain.useCase.AddItemToCartUseCase
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,16 +31,20 @@ class AddToCartViewModel @Inject constructor(
             validUserSessionUsecase.isSessionExpired().collect { sessionState ->
                 when (sessionState) {
                     ApplicationConstant.SESSION_EXPIRED -> {
-                        validUserSessionUsecase.refreshSession()
+                        validUserSessionUsecase.refreshSession().collect{
+                            when(it) {
+                                ApplicationConstant.SESSION_REFRESHED -> {
+                                    addItemToCartUseCase.addItemToCart()
+                                    _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                                }
+                                ApplicationConstant.SESSION_REFRESHED_FAILED -> {
+                                    //user must log in again
+                                    _addToCartStateFlow.value = AddItemToCartState.FAILED
+                                }
+                            }
+                        }
                     }
-                    ApplicationConstant.SESSION_REFRESHED -> {
-                        addItemToCartUseCase.addItemToCart()
-                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
-                    }
-                    ApplicationConstant.SESSION_REFRESHED_FAILED -> {
-                        //user must log in again
-                        _addToCartStateFlow.value = AddItemToCartState.FAILED
-                    }
+
                 }
             }
         }

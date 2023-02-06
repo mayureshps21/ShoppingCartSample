@@ -8,11 +8,6 @@ import javax.inject.Inject
 
 class ValidUserSessionUsecaseImpl @Inject constructor(val repo: ValidSessionRepo) :
     ValidUserSessionUsecase {
-    override fun isSessionExpired(): Flow<String> = flow { repo.checkIfUserValid() }
-
-    override fun isSessionRefreshedSuccesfully(): Flow<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun refreshSession() =repo.refreshSession()
+    override fun isSessionExpired(): Flow<String> = repo.checkIfUserValid()
+    override fun refreshSession():Flow<String> = repo.refreshSession()
 }

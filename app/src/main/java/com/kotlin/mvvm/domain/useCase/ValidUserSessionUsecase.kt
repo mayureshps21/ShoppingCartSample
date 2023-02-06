@@ -4,6 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ValidUserSessionUsecase {
     fun isSessionExpired(): Flow<String>
-    fun isSessionRefreshedSuccesfully(): Flow<String>
-    fun refreshSession()
+    fun refreshSession(): Flow<String>
 }

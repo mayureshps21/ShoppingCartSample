@@ -12,13 +12,21 @@ class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) :
         if (apiInterface.isSessionExpired()) {
             //refresh session
             emit(ApplicationConstant.SESSION_EXPIRED)
-        } else if (apiInterface.isSessionRefreshedSuccesfully())
-            emit(ApplicationConstant.SESSION_REFRESHED)
-        else emit(ApplicationConstant.SESSION_REFRESHED_FAILED)
+        }
+
     }
 
-    override fun refreshSession() {
-        apiInterface.refreshSession()
+    override fun refreshSession() = flow {
+        if (apiInterface.refreshSession() && isRefreshedlocally()) {
+            emit(ApplicationConstant.SESSION_REFRESHED)
+        } else {
+            emit(ApplicationConstant.SESSION_REFRESHED_FAILED)
+        }
+    }
+
+    private fun isRefreshedlocally(): Boolean {
+    // local refreshing of session
+        return true
     }
 }
 
