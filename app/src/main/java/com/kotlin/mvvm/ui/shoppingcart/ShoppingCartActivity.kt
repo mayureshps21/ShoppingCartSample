@@ -2,11 +2,16 @@ package com.kotlin.mvvm.ui.shoppingcart
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.kotlin.mvvm.R
+import com.kotlin.mvvm.databinding.ActivityShoppingCartBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ShoppingCartActivity : AppCompatActivity() {
+    lateinit var activityShoppingCartBinding: ActivityShoppingCartBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shopping_cart)
+        activityShoppingCartBinding = ActivityShoppingCartBinding.inflate(layoutInflater).also {
+            setContentView(it.root)
+        }
     }
 }

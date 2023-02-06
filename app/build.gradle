@@ -50,6 +50,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
 
     // Support Libraries
     implementation 'com.android.support:design:28.0.0'
