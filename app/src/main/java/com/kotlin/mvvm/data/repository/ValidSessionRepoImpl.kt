@@ -9,7 +9,11 @@ import javax.inject.Inject
 
 class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) : ValidSessionRepo {
     override fun checkIfUserValid(): Flow<String> = flow {
-        if (apiInterface.isSessionExpired()) {
+//        if (apiInterface.isSessionExpired()) {
+//            //refresh session
+//            emit(ApplicationConstant.SESSION_EXPIRED)
+//        }
+        if (true) {
             //refresh session
             emit(ApplicationConstant.SESSION_EXPIRED)
         }
@@ -17,7 +21,12 @@ class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) :
     }
 
     override fun refreshSession() = flow {
-        if (apiInterface.refreshSession() && isRefreshedlocally()) {
+//        if (apiInterface.refreshSession() && isRefreshedlocally()) {
+//            emit(ApplicationConstant.SESSION_REFRESHED)
+//        } else {
+//            emit(ApplicationConstant.SESSION_REFRESHED_FAILED)
+//        }
+        if (true && isRefreshedlocally()) {
             emit(ApplicationConstant.SESSION_REFRESHED)
         } else {
             emit(ApplicationConstant.SESSION_REFRESHED_FAILED)
