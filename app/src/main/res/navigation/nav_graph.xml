@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_nav_graph"
+    app:startDestination="@id/addToCartFragment">
+
+    <fragment android:name="com.kotlin.mvvm.ui.fragment.AddToCartFragment"
+        android:label="AddToCartFragment"
+        android:id="@+id/addToCartFragment"
+        tools:layout="@layout/fragment_add_to_cart">
+        <action android:id="@+id/addToCartFragment_to_cartItemsFragment"
+            app:destination="@id/cartItemsFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/addToCartFragment"/>
+    </fragment>
+
+    <fragment android:name="com.kotlin.mvvm.ui.fragment.CartItemsFragment"
+        android:label="cartItemsFragment"
+        android:id="@+id/cartItemsFragment"
+        tools:layout="@layout/fragment_cart_items">
+
+    </fragment>
+
+</navigation>

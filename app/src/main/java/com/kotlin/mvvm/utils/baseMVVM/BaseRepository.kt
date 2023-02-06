@@ -5,5 +5,5 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BaseRepository @Inject constructor(private val apiInterface : ApiInterface) {
+open class BaseRepository @Inject constructor(private val apiInterface : ApiInterface) {
 }

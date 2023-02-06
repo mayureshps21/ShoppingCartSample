@@ -1,17 +1,11 @@
 package com.kotlin.mvvm.di.modules
 
-import android.content.Context
-import androidx.room.Room
-import com.kotlin.mvvm.repository.api.ApiServices
-import com.kotlin.mvvm.repository.api.network.LiveDataCallAdapterFactoryForRetrofit
-import com.kotlin.mvvm.repository.db.AppDatabase
-import com.kotlin.mvvm.repository.db.shoppingcart.UserSessionDao
+
 import com.kotlin.mvvm.utils.ApplicationConstant
 import com.kotlin.mvvm.utils.baseMVVM.ApiInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -52,33 +46,16 @@ object AppModule {
      */
     @Singleton
     @Provides
-    fun provideNewsService(): ApiServices {
+    fun provideService(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ApplicationConstant.BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(LiveDataCallAdapterFactoryForRetrofit())
             .build()
-            .create(ApiServices::class.java)
     }
 
     @Provides
-    fun provideCharacterService(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
+    fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
-
-    /**
-     * Provides app AppDatabase
-     */
-    @Singleton
-    @Provides
-    fun provideDb(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "shopping-db")
-            .fallbackToDestructiveMigration().build()
-
-    /**
-     * Provides CountriesDao an object to access Countries table from Database
-     */
-    @Singleton
-    @Provides
-    fun provideUserSessionDao(db: AppDatabase): UserSessionDao = db.userSessionDao()
 
 }
