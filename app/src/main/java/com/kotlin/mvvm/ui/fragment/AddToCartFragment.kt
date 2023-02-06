@@ -9,10 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.kotlin.mvvm.databinding.FragmentAddToCartBinding
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.ui.viewmodel.AddToCartViewModel
+import com.kotlin.mvvm.utils.ToastUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,6 +40,17 @@ class AddToCartFragment : Fragment() {
                     when (it) {
                         is AddItemToCartState.LOADING -> fragmentAddToCartBinding.progressbar.visibility =
                             View.VISIBLE
+                        is AddItemToCartState.SUCCESS -> {
+                            with(fragmentAddToCartBinding) {
+                                progressbar.visibility = View.VISIBLE
+                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart") }
+                            }
+                        }  is AddItemToCartState.FAILED -> {
+                            with(fragmentAddToCartBinding) {
+                                progressbar.visibility = View.VISIBLE
+                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart") }
+                            }
+                        }
 
                     }
                 }
@@ -52,7 +63,7 @@ class AddToCartFragment : Fragment() {
             viewModel.addItemToCart()
         }
         fragmentAddToCartBinding.ivBack.setOnClickListener {
-           requireActivity().finish()
+            requireActivity().finish()
         }
 
     }

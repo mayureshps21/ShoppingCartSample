@@ -58,6 +58,4 @@ object AppModule {
     fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
 
-
-
 }

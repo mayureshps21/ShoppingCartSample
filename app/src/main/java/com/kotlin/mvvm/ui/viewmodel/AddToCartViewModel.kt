@@ -3,7 +3,9 @@ package com.kotlin.mvvm.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlin.mvvm.domain.useCase.AddItemToCartUseCase
+import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
+import com.kotlin.mvvm.utils.ApplicationConstant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,16 +16,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddToCartViewModel @Inject constructor(
-    var getAddItemToCartUseCase: AddItemToCartUseCase
+    var validUserSessionUsecase: ValidUserSessionUsecase,
+    var addItemToCartUseCase: AddItemToCartUseCase,
 ) : ViewModel() {
     private var _addToCartStateFlow = MutableStateFlow<AddItemToCartState>(AddItemToCartState.IDLE)
     val addToCartStateFlow: StateFlow<AddItemToCartState>
         get() = _addToCartStateFlow.asStateFlow()
 
     fun addItemToCart() {
-        _addToCartStateFlow.value=AddItemToCartState.LOADING
+        _addToCartStateFlow.value = AddItemToCartState.LOADING
         viewModelScope.launch {
-            getAddItemToCartUseCase.addItemToCart()
+            validUserSessionUsecase.isSessionExpired().collect { sessionState ->
+                when (sessionState) {
+                    ApplicationConstant.SESSION_EXPIRED -> {
+                        validUserSessionUsecase.refreshSession()
+                    }
+                    ApplicationConstant.SESSION_REFRESHED -> {
+                        addItemToCartUseCase.addItemToCart()
+                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                    }
+                    ApplicationConstant.SESSION_REFRESHED_FAILED -> {
+                        //user must log in again
+                        _addToCartStateFlow.value = AddItemToCartState.FAILED
+                    }
+                }
+            }
         }
+
+
     }
 }
