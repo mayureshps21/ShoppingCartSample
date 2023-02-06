@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.shoppingcart.ShoppingCartActivity"
+            android:name=".ui.activity.ShoppingCartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,16 +29,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".ui.countries.CountriesActivity"
-            android:exported="true"
-            android:label="@string/news_by_countries">
 
-        </activity>
-        <activity
-            android:name=".ui.news.NewsActivity"
-            android:exported="false"
-            android:label="@string/news" />
     </application>
 
 </manifest>

@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.kotlin.mvvm.databinding.FragmentAddToCartBinding
+import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.ui.viewmodel.AddToCartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddToCartFragment : Fragment() {
@@ -23,17 +29,32 @@ class AddToCartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setObservers()
         setViews()
+    }
+
+    private fun setObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addToCartStateFlow.collect {
+                    when (it) {
+                        is AddItemToCartState.LOADING -> fragmentAddToCartBinding.progressbar.visibility =
+                            View.VISIBLE
+
+                    }
+                }
+            }
+        }
     }
 
     private fun setViews() {
         fragmentAddToCartBinding.addToCart.setOnClickListener {
             viewModel.addItemToCart()
         }
-
-        fragmentAddToCartBinding.ivCart.setOnClickListener {
-            //
+        fragmentAddToCartBinding.ivBack.setOnClickListener {
+           requireActivity().finish()
         }
+
     }
 
 }

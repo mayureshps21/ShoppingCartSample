@@ -1,4 +1,4 @@
-package com.kotlin.mvvm.ui.shoppingcart
+package com.kotlin.mvvm.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
