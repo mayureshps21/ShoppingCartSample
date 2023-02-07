@@ -54,6 +54,7 @@ class AddToCartFragment : Fragment() {
                                 context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart",Toast.LENGTH_LONG) }
                                 Intent(context,LoginActivity::class.java).also {
                                     startActivity(it)
+                                    requireActivity().finish()
                                 }
                             }
                         }
