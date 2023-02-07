@@ -1,15 +1,21 @@
 package com.kotlin.mvvm.ui.components
 
+import android.widget.ProgressBar
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -22,9 +28,9 @@ import com.kotlin.mvvm.R
 @Composable
 fun MainBody(
     paddingValues: PaddingValues,
-    clickAddToCartButton: () -> Unit
+    showProgressBar: State<Boolean>,
+    clickAddToCartButton: () -> Unit,
 ) {
-
     Column {
         Image(painter = painterResource(R.drawable.item), contentDescription = "")
         Spacer(modifier = Modifier.height(25.dp))
@@ -45,7 +51,21 @@ fun MainBody(
             modifier = Modifier.fillMaxWidth(), text = stringResource(R.string.extra_details),
             style = TextStyle(color = Color.Black), fontSize = 15.sp, textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(.5f))
+        AnimatedVisibility(showProgressBar.value){
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CircularProgressIndicator(
+                    color=Color(0xFFFFC039),
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.weight(.5f))
+
         Box(modifier = Modifier.background(shape = RectangleShape, color = Color(0xFF0F0F4A))) {
             Button(
                 onClick = {

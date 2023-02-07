@@ -10,6 +10,8 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,12 +29,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
- fun AddToCartScreen(
+fun AddToCartScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: AddToCartViewModel = hiltViewModel()
 ) {
-    val context= LocalContext.current
+    val context = LocalContext.current
+    val showProgressbarState = remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(true) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -40,7 +43,7 @@ import kotlinx.coroutines.launch
                 viewModel.addToCartStateFlow.collectLatest {
                     when (it) {
                         is AddItemToCartState.LOADING -> {
-
+                            showProgressbarState.value = true
                         }
                         is AddItemToCartState.SUCCESS -> {
                             ToastUtil.showCustomToast(
@@ -48,6 +51,8 @@ import kotlinx.coroutines.launch
                                 "Item Added to Cart",
                                 Toast.LENGTH_SHORT
                             )
+                            showProgressbarState.value = false
+
                         }
                         is AddItemToCartState.FAILED -> {
                             ToastUtil.showCustomToast(
@@ -56,6 +61,7 @@ import kotlinx.coroutines.launch
                                 Toast.LENGTH_SHORT
                             )
                             navController.navigate(CartScreen.LoginScreen.route)
+                            showProgressbarState.value = false
 
                         }
 
@@ -97,7 +103,7 @@ import kotlinx.coroutines.launch
         },
         scaffoldState = rememberScaffoldState(),
         content = { paddingValues ->
-            MainBody(paddingValues) {
+            MainBody(paddingValues = paddingValues, showProgressBar = showProgressbarState) {
                 viewModel.addItem.invoke()
             }
         })
