@@ -71,6 +71,9 @@ class AddToCartFragment : Fragment() {
                             }
                         }
 
+                        else -> {
+                            //
+                        }
                     }
                 }
             }
