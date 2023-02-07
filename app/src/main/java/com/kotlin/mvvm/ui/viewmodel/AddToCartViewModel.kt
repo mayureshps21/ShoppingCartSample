@@ -44,6 +44,10 @@ class AddToCartViewModel @Inject constructor(
                             }
                         }
                     }
+                    ApplicationConstant.SESSION_VALID -> {
+                        addItemToCartUseCase.addItemToCart()
+                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                    }
 
                 }
             }

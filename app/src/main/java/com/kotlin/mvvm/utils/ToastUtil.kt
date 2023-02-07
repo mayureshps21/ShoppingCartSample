@@ -13,7 +13,7 @@ import com.kotlin.mvvm.R
 
 object ToastUtil {
 
-    fun showCustomToast(context: Context, message: String) {
+    fun showCustomToast(context: Context, message: String,length: Int) {
         try {
             val inflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -22,7 +22,7 @@ object ToastUtil {
             textView.text = message
             val toast = Toast(context)
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-            toast.duration = Toast.LENGTH_SHORT
+            toast.duration = length
             toast.view = layout
             toast.show()
         } catch (e: Exception) {

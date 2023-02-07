@@ -1,15 +1,18 @@
 package com.kotlin.mvvm.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.kotlin.mvvm.databinding.FragmentAddToCartBinding
+import com.kotlin.mvvm.ui.activity.LoginActivity
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.ui.viewmodel.AddToCartViewModel
 import com.kotlin.mvvm.utils.ToastUtil
@@ -42,13 +45,16 @@ class AddToCartFragment : Fragment() {
                             View.VISIBLE
                         is AddItemToCartState.SUCCESS -> {
                             with(fragmentAddToCartBinding) {
-                                progressbar.visibility = View.VISIBLE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart") }
+                                progressbar.visibility = View.GONE
+                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart",Toast.LENGTH_SHORT) }
                             }
                         }  is AddItemToCartState.FAILED -> {
                             with(fragmentAddToCartBinding) {
-                                progressbar.visibility = View.VISIBLE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart") }
+                                progressbar.visibility = View.GONE
+                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart",Toast.LENGTH_LONG) }
+                                Intent(context,LoginActivity::class.java).also {
+                                    startActivity(it)
+                                }
                             }
                         }
 
