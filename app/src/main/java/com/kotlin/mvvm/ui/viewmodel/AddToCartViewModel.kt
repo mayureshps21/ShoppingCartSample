@@ -21,8 +21,12 @@ class AddToCartViewModel @Inject constructor(
     private var _addToCartStateFlow = MutableSharedFlow<AddItemToCartState>()
     val addToCartStateFlow: SharedFlow<AddItemToCartState>
         get() = _addToCartStateFlow.asSharedFlow()
+    val  addItem:()->Unit= {
+        viewModelScope.launch { addItemToCart() }
 
-    suspend fun addItemToCart() {
+    }
+
+  private  suspend fun addItemToCart() {
         _addToCartStateFlow.emit( AddItemToCartState.LOADING)
         viewModelScope.launch {
             validUserSessionUsecase.isSessionExpired().collect { sessionState ->

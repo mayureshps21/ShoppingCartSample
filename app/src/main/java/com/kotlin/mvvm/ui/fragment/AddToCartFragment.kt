@@ -62,7 +62,7 @@ class AddToCartFragment : Fragment() {
                                     ToastUtil.showCustomToast(
                                         it1,
                                         "Session refresh failed!! Please log in again to add item in the cart",
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     )
                                 }
                                 Intent(context, LoginActivity::class.java).also {
@@ -80,9 +80,7 @@ class AddToCartFragment : Fragment() {
     private fun setViews() {
 
         fragmentAddToCartBinding.addToCart.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.addItemToCart()
-            }
+                viewModel.addItem.invoke()
         }
         fragmentAddToCartBinding.ivBack.setOnClickListener {
             requireActivity().finish()
