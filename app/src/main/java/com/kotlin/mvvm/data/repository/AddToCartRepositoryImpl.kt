@@ -18,6 +18,6 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
     }
 
     private fun addToCartLocally() {
-        TODO("Not yet implemented")
+        //add cart locally
     }
 }

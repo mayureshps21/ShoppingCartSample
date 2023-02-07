@@ -42,8 +42,8 @@ class AddToCartFragment : Fragment() {
                             View.VISIBLE
                         is AddItemToCartState.SUCCESS -> {
                             with(fragmentAddToCartBinding) {
-                                progressbar.visibility = View.VISIBLE
                                 context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart") }
+                                progressbar.visibility = View.GONE
                             }
                         }  is AddItemToCartState.FAILED -> {
                             with(fragmentAddToCartBinding) {
