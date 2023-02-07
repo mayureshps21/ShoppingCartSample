@@ -67,6 +67,7 @@ class AddToCartFragment : Fragment() {
                                 }
                                 Intent(context, LoginActivity::class.java).also {
                                     startActivity(it)
+                                    requireActivity().finish()
                                 }
                             }
                         }
