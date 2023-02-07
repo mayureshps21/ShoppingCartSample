@@ -2,7 +2,6 @@ package com.kotlin.mvvm.data.repository
 
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
 import com.kotlin.mvvm.utils.ApplicationConstant
-import com.kotlin.mvvm.utils.DataProvider
 import com.kotlin.mvvm.utils.baseMVVM.ApiInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

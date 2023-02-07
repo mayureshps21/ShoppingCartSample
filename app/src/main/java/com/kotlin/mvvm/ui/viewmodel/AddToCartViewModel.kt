@@ -34,8 +34,9 @@ class AddToCartViewModel @Inject constructor(
                         validUserSessionUsecase.refreshSession().collect{
                             when(it) {
                                 ApplicationConstant.SESSION_REFRESHED -> {
-                                    addItemToCartUseCase.addItemToCart()
-                                    _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                                    addItemToCartUseCase.addItemToCart().collect{
+                                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                                    }
                                 }
                                 ApplicationConstant.SESSION_REFRESHED_FAILED -> {
                                     //user must log in again

@@ -1,4 +1,4 @@
-package com.kotlin.mvvm.utils.baseMVVM
+package com.kotlin.mvvm.data.api
 
 import retrofit2.http.GET
 import retrofit2.http.POST

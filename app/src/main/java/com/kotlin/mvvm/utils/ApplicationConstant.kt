@@ -6,5 +6,6 @@ object ApplicationConstant {
     const val SESSION_VALID: String = "VALID"
     const val SESSION_REFRESHED: String = "REFRESHED"
     const val SESSION_REFRESHED_FAILED: String = "FAILED"
+    const val ITEM_ADDED: String = "ADDED"
 
 }

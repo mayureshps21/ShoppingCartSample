@@ -2,7 +2,7 @@ package com.kotlin.mvvm.di.modules
 
 
 import com.kotlin.mvvm.utils.ApplicationConstant
-import com.kotlin.mvvm.utils.baseMVVM.ApiInterface
+import com.kotlin.mvvm.data.api.ApiInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
