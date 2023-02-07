@@ -46,13 +46,26 @@ class AddToCartFragment : Fragment() {
                         is AddItemToCartState.SUCCESS -> {
                             with(fragmentAddToCartBinding) {
                                 progressbar.visibility = View.GONE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart",Toast.LENGTH_SHORT) }
+                                context?.let { it1 ->
+                                    ToastUtil.showCustomToast(
+                                        it1,
+                                        "Item Added to Cart",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                }
                             }
-                        }  is AddItemToCartState.FAILED -> {
+                        }
+                        is AddItemToCartState.FAILED -> {
                             with(fragmentAddToCartBinding) {
                                 progressbar.visibility = View.GONE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart",Toast.LENGTH_LONG) }
-                                Intent(context,LoginActivity::class.java).also {
+                                context?.let { it1 ->
+                                    ToastUtil.showCustomToast(
+                                        it1,
+                                        "Session refresh failed!! Please log in again to add item in the cart",
+                                        Toast.LENGTH_LONG
+                                    )
+                                }
+                                Intent(context, LoginActivity::class.java).also {
                                     startActivity(it)
                                 }
                             }
@@ -65,8 +78,11 @@ class AddToCartFragment : Fragment() {
     }
 
     private fun setViews() {
+
         fragmentAddToCartBinding.addToCart.setOnClickListener {
-            viewModel.addItemToCart()
+            lifecycleScope.launch {
+                viewModel.addItemToCart()
+            }
         }
         fragmentAddToCartBinding.ivBack.setOnClickListener {
             requireActivity().finish()

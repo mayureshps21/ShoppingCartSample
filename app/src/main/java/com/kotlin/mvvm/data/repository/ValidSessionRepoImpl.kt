@@ -13,6 +13,8 @@ class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) :
 //        if (apiInterface.isSessionExpired()) {
 //            //refresh session
 //            emit(ApplicationConstant.SESSION_EXPIRED)
+//        }else{
+//        emit(ApplicationConstant.SESSION_VALID)
 //        }
         if (DataProvider.getSessionDetail()) {
             //refresh session

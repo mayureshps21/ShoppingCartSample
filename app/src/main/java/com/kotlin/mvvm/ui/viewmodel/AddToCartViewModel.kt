@@ -8,10 +8,7 @@ import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.utils.ApplicationConstant
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,12 +18,12 @@ class AddToCartViewModel @Inject constructor(
     var validUserSessionUsecase: ValidUserSessionUsecase,
     var addItemToCartUseCase: AddItemToCartUseCase,
 ) : ViewModel() {
-    private var _addToCartStateFlow = MutableStateFlow<AddItemToCartState>(AddItemToCartState.IDLE)
-    val addToCartStateFlow: StateFlow<AddItemToCartState>
-        get() = _addToCartStateFlow.asStateFlow()
+    private var _addToCartStateFlow = MutableSharedFlow<AddItemToCartState>()
+    val addToCartStateFlow: SharedFlow<AddItemToCartState>
+        get() = _addToCartStateFlow.asSharedFlow()
 
-    fun addItemToCart() {
-        _addToCartStateFlow.value = AddItemToCartState.LOADING
+    suspend fun addItemToCart() {
+        _addToCartStateFlow.emit( AddItemToCartState.LOADING)
         viewModelScope.launch {
             validUserSessionUsecase.isSessionExpired().collect { sessionState ->
                 when (sessionState) {
@@ -35,19 +32,19 @@ class AddToCartViewModel @Inject constructor(
                             when(it) {
                                 ApplicationConstant.SESSION_REFRESHED -> {
                                     addItemToCartUseCase.addItemToCart().collect{
-                                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                                        _addToCartStateFlow.emit( AddItemToCartState.SUCCESS)
                                     }
                                 }
                                 ApplicationConstant.SESSION_REFRESHED_FAILED -> {
                                     //user must log in again
-                                    _addToCartStateFlow.value = AddItemToCartState.FAILED
+                                    _addToCartStateFlow.emit( AddItemToCartState.FAILED)
                                 }
                             }
                         }
                     }
                     ApplicationConstant.SESSION_VALID -> {
                         addItemToCartUseCase.addItemToCart()
-                        _addToCartStateFlow.value = AddItemToCartState.SUCCESS
+                        _addToCartStateFlow.emit( AddItemToCartState.SUCCESS)
                     }
 
                 }
