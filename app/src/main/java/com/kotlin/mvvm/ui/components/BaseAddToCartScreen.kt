@@ -42,7 +42,7 @@ fun BaseAddToCartScreen(
     LaunchedEffect(true) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             launch {
-                viewModel.addToCartStateFlow.collectLatest {
+                viewModel.addToCartSharedFlow.collectLatest {
                     when (it) {
                         is AddItemToCartState.LOADING -> {
                             showProgressbarState.value = true

@@ -43,6 +43,13 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    sourceSets {
+        main {
+            java {
+                srcDirs 'src\\main\\java', 'src\\test\\java'
+            }
+        }
+    }
     configurations.all {
         resolutionStrategy {
             eachDependency {
@@ -52,15 +59,9 @@ android {
             }
         }
     }
+
     buildFeatures {
         viewBinding true
-    }
-    sourceSets {
-        main {
-            java {
-                srcDirs 'src/main/java', 'src/test'
-            }
-        }
     }
 }
 
@@ -74,7 +75,22 @@ dependencies {
     // Support Libraries
     implementation 'com.android.support:design:28.0.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'junit:junit:4.12'
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    implementation "androidx.arch.core:core-testing:2.1.0"
+    implementation 'androidx.test.ext:junit-ktx:1.1.4'
+    androidTestImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:3.9.0"
 
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
+    testImplementation "io.mockk:mockk:1.11.0"
+    // Mock web server
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+    testImplementation "org.mockito:mockito-inline:2.13.0"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.7.0"
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
@@ -111,17 +127,12 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.2.11"
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
 
-    //unit test
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.3.1'
-    testImplementation 'android.arch.core:core-testing:1.1.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    def androidx_test_version = "1.4.0"
-    androidTestImplementation "androidx.test:runner:$androidx_test_version"
-    androidTestImplementation "androidx.test:core-ktx:$androidx_test_version"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    testImplementation "io.mockk:mockk:1.11.0"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
 
 // Compose
     def composeBom = platform('androidx.compose:compose-bom:2022.10.00')

@@ -39,7 +39,7 @@ class AddToCartFragment : Fragment() {
     private fun setObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addToCartStateFlow.collect {
+                viewModel.addToCartSharedFlow.collect {
                     when (it) {
                         is AddItemToCartState.LOADING -> fragmentAddToCartBinding.progressbar.visibility =
                             View.VISIBLE
