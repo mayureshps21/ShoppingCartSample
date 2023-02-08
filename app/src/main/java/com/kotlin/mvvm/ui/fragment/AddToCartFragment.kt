@@ -11,11 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.kotlin.mvvm.R
 import com.kotlin.mvvm.databinding.FragmentAddToCartBinding
 import com.kotlin.mvvm.ui.activity.LoginActivity
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.ui.viewmodel.AddToCartViewModel
 import com.kotlin.mvvm.utils.ToastUtil
+import com.kotlin.mvvm.utils.doIfTrue
+import com.kotlin.mvvm.utils.isConnectedToNetwork
+import com.kotlin.mvvm.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -37,31 +41,48 @@ class AddToCartFragment : Fragment() {
     }
 
     private fun setObservers() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addToCartStateFlow.collect {
-                    when (it) {
-                        is AddItemToCartState.LOADING -> fragmentAddToCartBinding.progressbar.visibility =
-                            View.VISIBLE
-                        is AddItemToCartState.SUCCESS -> {
-                            with(fragmentAddToCartBinding) {
-                                progressbar.visibility = View.GONE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Item Added to Cart",Toast.LENGTH_SHORT) }
-                            }
-                        }  is AddItemToCartState.FAILED -> {
-                            with(fragmentAddToCartBinding) {
-                                progressbar.visibility = View.GONE
-                                context?.let { it1 -> ToastUtil.showCustomToast(it1,"Session refresh failed!! Please log in again to add item in the cart",Toast.LENGTH_LONG) }
-                                Intent(context,LoginActivity::class.java).also {
-                                    startActivity(it)
-                                    requireActivity().finish()
+        activity?.isConnectedToNetwork()?.doIfTrue {
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.addToCartStateFlow.collect {
+                        when (it) {
+                            is AddItemToCartState.LOADING -> fragmentAddToCartBinding.progressbar.visibility =
+                                View.VISIBLE
+                            is AddItemToCartState.SUCCESS -> {
+                                with(fragmentAddToCartBinding) {
+                                    progressbar.visibility = View.GONE
+                                    context?.let { it1 ->
+                                        ToastUtil.showCustomToast(
+                                            it1,
+                                            "Item Added to Cart",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                    }
                                 }
                             }
-                        }
+                            is AddItemToCartState.FAILED -> {
+                                with(fragmentAddToCartBinding) {
+                                    progressbar.visibility = View.GONE
+                                    context?.let { it1 ->
+                                        ToastUtil.showCustomToast(
+                                            it1,
+                                            "Session refresh failed!! Please log in again to add item in the cart",
+                                            Toast.LENGTH_LONG
+                                        )
+                                    }
+                                    Intent(context, LoginActivity::class.java).also {
+                                        startActivity(it)
+                                        requireActivity().finish()
+                                    }
+                                }
+                            }
 
+                        }
                     }
                 }
             }
+        }?: run {
+            context?.showToast(getString(R.string.no_internet))
         }
     }
 
