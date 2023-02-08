@@ -5,11 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kotlin.mvvm.ui.components.AddToCartScreen
+import com.kotlin.mvvm.ui.components.BaseAddToCartScreen
+import com.kotlin.mvvm.ui.components.LoginScreen
 import com.kotlin.mvvm.utils.CartScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,12 +27,12 @@ class JetpackActivity : ComponentActivity() {
                         startDestination = CartScreen.MainCartScreen.route
                     ) {
                         composable(route = CartScreen.MainCartScreen.route) {
-                                AddToCartScreen(navController = navController)
+                                BaseAddToCartScreen(navController = navController)
                         }
                         composable(
                             route = CartScreen.LoginScreen.route,
                         ) {
-                            //
+                            LoginScreen()
                         }
                     }
                 }

@@ -1,113 +1,95 @@
 package com.kotlin.mvvm.ui.components
 
-import android.widget.Toast
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
-import com.kotlin.mvvm.ui.viewState.AddItemToCartState
-import com.kotlin.mvvm.ui.viewmodel.AddToCartViewModel
-import com.kotlin.mvvm.utils.CartScreen
-import com.kotlin.mvvm.utils.ToastUtil
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.sp
+import com.kotlin.mvvm.R
 
 @Composable
 fun AddToCartScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModel: AddToCartViewModel = hiltViewModel()
+    paddingValues: PaddingValues,
+    showProgressBar: State<Boolean>,
+    clickAddToCartButton: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val showProgressbarState = remember { mutableStateOf(false) }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(true) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            launch {
-                viewModel.addToCartStateFlow.collectLatest {
-                    when (it) {
-                        is AddItemToCartState.LOADING -> {
-                            showProgressbarState.value = true
-                        }
-                        is AddItemToCartState.SUCCESS -> {
-                            ToastUtil.showCustomToast(
-                                context,
-                                "Item Added to Cart",
-                                Toast.LENGTH_SHORT
-                            )
-                            showProgressbarState.value = false
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxSize(),
+    ) {
+        Image(painter = painterResource(R.drawable.item), contentDescription = "")
+        Spacer(modifier = Modifier.height(25.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(), text = stringResource(R.string.item_description),
+            style = TextStyle(color = Color.Black), fontSize = 25.sp, textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.item_amount),
+            style = TextStyle(color = Color(0xFFFFC039)),
+            fontSize = 40.sp,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            modifier = Modifier.fillMaxWidth(), text = stringResource(R.string.extra_details),
+            style = TextStyle(color = Color.Black), fontSize = 15.sp, textAlign = TextAlign.Center
+        )
 
-                        }
-                        is AddItemToCartState.FAILED -> {
-                            ToastUtil.showCustomToast(
-                                context,
-                                "Session refresh failed!! Please log in again to add item in the cart",
-                                Toast.LENGTH_SHORT
-                            )
-                            navController.navigate(CartScreen.LoginScreen.route)
-                            showProgressbarState.value = false
+        AnimatedVisibility(showProgressBar.value) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CircularProgressIndicator(
+                    color = Color(0xFFFFC039),
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(170.dp))
 
-                        }
-
-
-                        else -> {
-                            //
-                        }
-                    }
-                }
+        Box(
+            modifier = Modifier.background(
+                shape = RectangleShape,
+                color = Color(0xFF0F0F4A)
+            ),
+        ) {
+            Button(
+                onClick = {
+                    clickAddToCartButton()
+                }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0F0F4A)),
+                modifier = Modifier.fillMaxWidth().height(60.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.add_to_cart),
+                    style = TextStyle(color = Color.White),
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
-    Scaffold(modifier,
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = {}, modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Icon(Icons.Filled.ArrowBack, "", tint = Color.White)
-                    }
-                }, actions = {
-                    IconButton(
-                        onClick = {},
-                        modifier = Modifier.padding(horizontal = 16.dp).offset(x = (20).dp)
-                    ) {
-                        Icon(Icons.Filled.ShoppingCart, "", tint = Color.White)
-                    }
-                    IconButton(
-                        onClick = {},
-                        modifier = Modifier.padding(horizontal = 16.dp).offset(x = (-5).dp)
-                    ) {
-                        Icon(Icons.Outlined.Favorite, "", tint = Color.White)
-                    }
-                },
-                backgroundColor = Color(0xFF0F0F4A)
-            )
-        },
-        scaffoldState = rememberScaffoldState(),
-        content = { paddingValues ->
-            MainBody(paddingValues = paddingValues, showProgressBar = showProgressbarState) {
-                viewModel.addItem.invoke()
-            }
-        })
-}
 
+
+}
 
 
