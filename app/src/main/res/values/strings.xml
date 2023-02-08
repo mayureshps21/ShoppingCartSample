@@ -23,6 +23,9 @@
     <string name="str_username">Username</string>
     <string name="str_login_screen">Login</string>
     <string name="str_login">Login</string>
+
+    <string name="no_internet">Please check your Internet Connection.</string>
+
     <string name="title_activity_main">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

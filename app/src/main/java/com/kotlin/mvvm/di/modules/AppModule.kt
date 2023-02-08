@@ -60,6 +60,13 @@ object AppModule {
             .build()
     }
 
+  /*  val networkRequests = module {
+        single { provideApiInterface(get()) }
+    }*/
+
+   /* private fun provideLoginService(retrofit: Retrofit): ApiInterface =
+        retrofit.create(ApiInterface::class.java)*/
+
     @Provides
     fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
