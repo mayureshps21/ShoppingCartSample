@@ -1,11 +1,15 @@
 package com.kotlin.mvvm.di.modules
 
 
+import android.content.Context
+import com.kotlin.mvvm.data.api.AddCookiesInterceptor
 import com.kotlin.mvvm.utils.ApplicationConstant
 import com.kotlin.mvvm.data.api.ApiInterface
+import com.kotlin.mvvm.data.api.ReceivedCookiesInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,9 +37,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(logging: HttpLoggingInterceptor,@ApplicationContext context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(ReceivedCookiesInterceptor(context))
+            .addInterceptor(AddCookiesInterceptor(context))
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
