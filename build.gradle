@@ -2,16 +2,16 @@
 
 buildscript {
     // Android SDK version
-    ext.androidMinSdkVersion = 16
-    ext.androidTargetSdkVersion = 32
-    ext.androidCompileSdkVersion = 32
+    ext.androidMinSdkVersion = 26
+    ext.androidTargetSdkVersion = 33
+    ext.androidCompileSdkVersion = 33
 
     // Kotlin
-    ext.kotlinVersion = '1.6.20'
+    ext.kotlinVersion = '1.7.20'
     ext.ankoVersion = '0.10.4'
 
     // Android library
-    ext.androidGradlePlugin = '7.0.3'
+    ext.androidGradlePlugin = '7.2.2'
     ext.supportVersion = '28.0.0'
     ext.lifecycleVersion = "2.2.0"
     ext.roomVersion = "2.4.2"
@@ -24,7 +24,7 @@ buildscript {
     ext.glideVersion = "4.12.0"
 
     // Dagger, Hilt
-    ext.dagger_hilt_version = "2.40.5"
+    ext.dagger_hilt_version = "2.43.2"
 
     // Testing
     ext.jUnitVersion = '4.13.2'
