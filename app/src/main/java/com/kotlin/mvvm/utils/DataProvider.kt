@@ -17,4 +17,9 @@ object DataProvider {
     fun refreshSession():Boolean{
         return (rand(1,10)%2 == 0)
     }
+
+    fun isRefreshedlocally(): Boolean {
+        // local refreshing of session
+        return true
+    }
 }

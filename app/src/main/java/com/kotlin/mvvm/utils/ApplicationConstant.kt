@@ -7,6 +7,7 @@ object ApplicationConstant {
     const val SESSION_INVALID: String = "INVALID"
     const val SESSION_REFRESHED: String = "REFRESHED"
     const val SESSION_REFRESHED_FAILED: String = "FAILED"
+    const val ITEM_ADD_ERROR: String = "ITEM_ADD_ERROR"
     const val ITEM_ADDED: String = "ADDED"
     const val COOKIES = "cookies"
 }

@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddToCartViewModel @Inject constructor(
-    var validUserSessionUsecase: ValidUserSessionUsecase,
     var addItemToCartUseCase: AddItemToCartUseCase,
 ) : ViewModel() {
     private var _addToCartSharedFlow = MutableSharedFlow<AddItemToCartState>()

@@ -1,13 +1,11 @@
 package com.kotlin.mvvm.data.repository
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.example.mvvm_demo.mvvm.BaseRepository
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.domain.repository.AddToCartRepository
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
 import com.kotlin.mvvm.utils.ApplicationConstant
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -33,7 +31,7 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
         address: String
     ): Flow<String> = flow {
         //check session is valid or not
-        if(checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) && refreshSession().equals(ApplicationConstant.SESSION_REFRESHED)){
+        if(checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(ApplicationConstant.SESSION_REFRESHED)){
             apiInterface.getUser("3").also {
                 println(it.userId)
             }
