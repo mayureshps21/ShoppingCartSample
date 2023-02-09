@@ -7,8 +7,10 @@ import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.utils.ApplicationConstant
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,31 +31,20 @@ class AddToCartViewModel @Inject constructor(
     private suspend fun addItemToCart() {
         _addToCartSharedFlow.emit(AddItemToCartState.LOADING)
         viewModelScope.launch {
-            validUserSessionUsecase.isSessionExpired()
-                .collect { sessionState ->
-                when (sessionState) {
-                    ApplicationConstant.SESSION_EXPIRED -> {
-                        validUserSessionUsecase.refreshSession().collect {
-                            when (it) {
-                                ApplicationConstant.SESSION_REFRESHED -> {
-                                    addItemToCartUseCase.addItemToCart().collect {
-                                        _addToCartSharedFlow.emit(AddItemToCartState.SUCCESS)
-                                    }
-                                }
-                                ApplicationConstant.SESSION_REFRESHED_FAILED -> {
-                                    //user must log in again
-                                    _addToCartSharedFlow.emit(AddItemToCartState.FAILED)
-                                }
-                            }
+            addItemToCartUseCase.addItemToCart(1,"wallet","$75","Washington D.C")
+                .catch { throwable ->
+                    _addToCartSharedFlow.emit(AddItemToCartState.ERROR(throwable.message.toString()))
+                }
+                .collect {
+                    when (it) {
+                        ApplicationConstant.ITEM_ADDED -> {
+                            _addToCartSharedFlow.emit(AddItemToCartState.SUCCESS)
+                        }
+                        else -> {
+                            _addToCartSharedFlow.emit(AddItemToCartState.FAILED)
                         }
                     }
-                    ApplicationConstant.SESSION_VALID -> {
-                        addItemToCartUseCase.addItemToCart()
-                        _addToCartSharedFlow.emit(AddItemToCartState.SUCCESS)
-                    }
-
                 }
-            }
         }
 
 

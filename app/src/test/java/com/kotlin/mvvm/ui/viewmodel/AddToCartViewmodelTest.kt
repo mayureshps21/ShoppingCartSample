@@ -1,7 +1,6 @@
 package com.kotlin.mvvm.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.compose.runtime.neverEqualPolicy
 import com.kotlin.mvvm.domain.useCase.AddItemToCartUseCase
 import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
 import com.kotlin.mvvm.utils.ApplicationConstant
@@ -12,14 +11,16 @@ import kotlinx.coroutines.test.*
 import org.junit.*
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.never
 import org.mockito.MockitoAnnotations
 
 
 class AddToCartViewModelTest {
 
     private lateinit var viewModel: AddToCartViewModel
-
+    val id = 1
+    val product = "wallet"
+    val amount = "$75"
+    val address = "Washington D.C"
     @OptIn(ExperimentalCoroutinesApi::class)
     var dispatcher = TestCoroutineDispatcher()
 
@@ -45,37 +46,29 @@ class AddToCartViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun addItemToCartSuccessWhenSessionisValidTest() = runTest(dispatcher) {
-        Mockito.`when`(userSessionUsecase.isSessionExpired()).thenReturn(flow<String> {
-            emit(ApplicationConstant.SESSION_VALID)
-        })
+
+        Mockito.`when`(addItemToCartUseCase.addItemToCart(id, product, amount, address))
+            .thenReturn(flow { emit(ApplicationConstant.ITEM_ADDED) })
         viewModel.addItem.invoke()
-        Mockito.verify(addItemToCartUseCase).addItemToCart()
+        Mockito.verify(addItemToCartUseCase).addItemToCart(id, product, amount, address)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun addItemToCartSuccessWhenSessionExpiredTest() = runTest(dispatcher) {
-        Mockito.`when`(userSessionUsecase.isSessionExpired()).thenReturn(flow<String> {
-            emit(ApplicationConstant.SESSION_EXPIRED)
-        })
-        Mockito.`when`(userSessionUsecase.refreshSession()).thenReturn(flow<String> {
-            emit(ApplicationConstant.SESSION_REFRESHED)
-        })
+        Mockito.`when`(addItemToCartUseCase.addItemToCart(id,product,amount,address))
+            .thenReturn(flow { emit(ApplicationConstant.SESSION_EXPIRED) })
         viewModel.addItem.invoke()
-        Mockito.verify(addItemToCartUseCase).addItemToCart()
+        Mockito.verify(addItemToCartUseCase).addItemToCart(id,product,amount,address)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun addItemToCartSuccessWhenSessionRefreshedFailedTest() = runTest(dispatcher) {
-        Mockito.`when`(userSessionUsecase.isSessionExpired()).thenReturn(flow<String> {
-            emit(ApplicationConstant.SESSION_EXPIRED)
-        })
-        Mockito.`when`(userSessionUsecase.refreshSession()).thenReturn(flow<String> {
-            emit(ApplicationConstant.SESSION_REFRESHED_FAILED)
-        })
+        Mockito.`when`(addItemToCartUseCase.addItemToCart(id,product,amount,address))
+            .thenReturn(flow { emit(ApplicationConstant.SESSION_REFRESHED_FAILED) })
         viewModel.addItem.invoke()
-        Mockito.verify(addItemToCartUseCase, never()).addItemToCart()
+        Mockito.verify(addItemToCartUseCase).addItemToCart(id,product,amount,address)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

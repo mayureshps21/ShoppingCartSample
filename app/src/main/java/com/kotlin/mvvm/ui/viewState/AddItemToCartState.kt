@@ -5,4 +5,5 @@ sealed class AddItemToCartState{
     object LOADING:AddItemToCartState()
     object SUCCESS:AddItemToCartState()
     object FAILED:AddItemToCartState()
+    class ERROR(val error: String) : AddItemToCartState()
 }

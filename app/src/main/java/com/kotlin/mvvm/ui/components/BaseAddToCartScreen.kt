@@ -56,6 +56,15 @@ fun BaseAddToCartScreen(
                             showProgressbarState.value = false
 
                         }
+                        is AddItemToCartState.ERROR -> {
+                            ToastUtil.showCustomToast(
+                                context,
+                                "Error ${it.error}!!Item cannot be added",
+                                Toast.LENGTH_SHORT
+                            )
+                            showProgressbarState.value = false
+
+                        }
                         is AddItemToCartState.FAILED -> {
                             ToastUtil.showCustomToast(
                                 context,
