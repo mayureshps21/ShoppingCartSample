@@ -28,9 +28,6 @@ class AddToCartViewModelTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var userSessionUsecase: ValidUserSessionUsecase
-
-    @Mock
     private lateinit var addItemToCartUseCase: AddItemToCartUseCase
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,8 +35,7 @@ class AddToCartViewModelTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         Dispatchers.setMain(dispatcher)
-        viewModel = AddToCartViewModel(userSessionUsecase, addItemToCartUseCase)
-        viewModel.validUserSessionUsecase = userSessionUsecase
+        viewModel = AddToCartViewModel( addItemToCartUseCase)
         viewModel.addItemToCartUseCase = addItemToCartUseCase
     }
 

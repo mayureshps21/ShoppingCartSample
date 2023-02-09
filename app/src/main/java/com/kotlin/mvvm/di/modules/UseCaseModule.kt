@@ -13,7 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 @Module
  class UseCaseModule {
-
     @Provides
     fun  provideAddItemToCartUseCase(validUserSessionRepository: AddToCartRepository): AddItemToCartUseCase=AddItemToCartUsecaseImpl(validUserSessionRepository)
 
