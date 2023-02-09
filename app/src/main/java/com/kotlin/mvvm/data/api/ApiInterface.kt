@@ -1,10 +1,10 @@
 package com.kotlin.mvvm.data.api
 
+import com.kotlin.mvvm.data.dto.UserDto
 import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiInterface {
-//    fun isSessionExpired():Boolean
-//    fun refreshSession():Boolean
-//    fun addToCart()
+    @GET("todos/{id}")
+   suspend fun getUser(@Path("id") id: String):UserDto
 }

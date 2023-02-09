@@ -16,10 +16,13 @@ class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) :
 //        }else{
 //        emit(ApplicationConstant.SESSION_VALID)
 //        }
+        apiInterface.getUser("3").also {
+            println("${it.userId},{${it.title}}")
+        }
         if (DataProvider.getSessionDetail()) {
             //refresh session
             emit(ApplicationConstant.SESSION_EXPIRED)
-        }else{
+        } else {
             emit(ApplicationConstant.SESSION_VALID)
         }
 
@@ -39,7 +42,7 @@ class ValidSessionRepoImpl @Inject constructor(val apiInterface: ApiInterface) :
     }
 
     private fun isRefreshedlocally(): Boolean {
-    // local refreshing of session
+        // local refreshing of session
         return true
     }
 }

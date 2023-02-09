@@ -107,7 +107,7 @@ fun BaseAddToCartScreen(
         },
         scaffoldState = rememberScaffoldState(),
         content = { paddingValues ->
-            AddToCartScreen(paddingValues = paddingValues, showProgressBar = showProgressbarState) {
+            AddToCartScreen(paddingValues = paddingValues, showProgressBar = showProgressbarState ,activity,context) {
                 viewModel.addItem.invoke()
             }
         })
