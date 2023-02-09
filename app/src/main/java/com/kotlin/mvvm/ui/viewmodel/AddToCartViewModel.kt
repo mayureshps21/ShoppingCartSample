@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddToCartViewModel @Inject constructor(
-    var validUserSessionUsecase: ValidUserSessionUsecase,
     var addItemToCartUseCase: AddItemToCartUseCase,
 ) : ViewModel() {
     private var _addToCartSharedFlow = MutableSharedFlow<AddItemToCartState>()
@@ -29,33 +28,16 @@ class AddToCartViewModel @Inject constructor(
     private suspend fun addItemToCart() {
         _addToCartSharedFlow.emit(AddItemToCartState.LOADING)
         viewModelScope.launch {
-            validUserSessionUsecase.isSessionExpired()
-                .collect { sessionState ->
-                when (sessionState) {
-                    ApplicationConstant.SESSION_EXPIRED -> {
-                        validUserSessionUsecase.refreshSession().collect {
-                            when (it) {
-                                ApplicationConstant.SESSION_REFRESHED -> {
-                                    addItemToCartUseCase.addItemToCart().collect {
-                                        _addToCartSharedFlow.emit(AddItemToCartState.SUCCESS)
-                                    }
-                                }
-                                ApplicationConstant.SESSION_REFRESHED_FAILED -> {
-                                    //user must log in again
-                                    _addToCartSharedFlow.emit(AddItemToCartState.FAILED)
-                                }
-                            }
-                        }
-                    }
-                    ApplicationConstant.SESSION_VALID -> {
-                        addItemToCartUseCase.addItemToCart()
+            addItemToCartUseCase.addItemToCart().collect {
+                when(it){
+                    ApplicationConstant.ITEM_ADDED ->{
                         _addToCartSharedFlow.emit(AddItemToCartState.SUCCESS)
                     }
-
+                    ApplicationConstant.ITEM_ADD_ERROR ->{
+                        _addToCartSharedFlow.emit(AddItemToCartState.FAILED)
+                    }
                 }
             }
         }
-
-
     }
 }

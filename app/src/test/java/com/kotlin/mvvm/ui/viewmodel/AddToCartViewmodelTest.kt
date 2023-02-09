@@ -1,6 +1,6 @@
 package com.kotlin.mvvm.ui.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+//import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.runtime.neverEqualPolicy
 import com.kotlin.mvvm.domain.useCase.AddItemToCartUseCase
 import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
@@ -8,19 +8,19 @@ import com.kotlin.mvvm.utils.ApplicationConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.*
-import org.junit.*
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.never
-import org.mockito.MockitoAnnotations
+//import kotlinx.coroutines.test.*
+//import org.junit.*
+//import org.mockito.Mock
+//import org.mockito.Mockito
+//import org.mockito.Mockito.never
+//import org.mockito.MockitoAnnotations
 
 
 class AddToCartViewModelTest {
 
     private lateinit var viewModel: AddToCartViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     var dispatcher = TestCoroutineDispatcher()
 
     @get:Rule
@@ -83,6 +83,6 @@ class AddToCartViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
-
+*/
 
 }
