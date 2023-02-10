@@ -17,6 +17,7 @@ class AddCookiesInterceptor(val context: Context) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder: Request.Builder = chain.request().newBuilder()
+        builder.addHeader("Accept","application/json")
         sharedPreferences = context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
         sharedPreferences.getStringSet(ApplicationConstant.COOKIES,HashSet())?.let {
             for (cookie in sharedPreferences.getStringSet(ApplicationConstant.COOKIES,HashSet())!!) {

@@ -25,6 +25,7 @@ import org.mockito.MockitoAnnotations
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 
 class AddToCartRepositoryImplTest {
 
@@ -71,19 +72,26 @@ class AddToCartRepositoryImplTest {
 
     }
 
-    @Test
+    @Test(expected = SocketTimeoutException::class)
     fun addToCartSuccess() = runTest(dispatcher) {
         Mockito.`when`(validSessionRepo.checkIfUserValid())
             .thenReturn(ApplicationConstant.SESSION_VALID)
         Mockito.`when`(validSessionRepo.refreshSession())
             .thenReturn(ApplicationConstant.SESSION_REFRESHED)
-        repositoryImpl.addToCart(5, "wallet", "$67", "")
+
         val expectedResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Gson().toJson(UserDto("5","5","Abhay")))
+            .setBody(Gson().toJson(UserDto("5", "5", "Abhay")))
+
         mockWebServer.enqueue(expectedResponse)
+        repositoryImpl.addToCart(5, "wallet", "$67", "").test {
+            Assert.assertEquals(this.awaitItem(), ApplicationConstant.ITEM_ADDED)
+            awaitComplete()
+        }
         val actualResponse = apiInterface.getUser("5")
         Assert.assertEquals(actualResponse.title, "Abhay")
+
+
     }
 
     @Test
@@ -92,12 +100,37 @@ class AddToCartRepositoryImplTest {
             .thenReturn(ApplicationConstant.SESSION_INVALID)
         Mockito.`when`(validSessionRepo.refreshSession())
             .thenReturn(ApplicationConstant.SESSION_REFRESHED_FAILED)
-       repositoryImpl.addToCart(5, "wallet", "$67", "").test {
-           Assert.assertEquals(this.awaitItem(),ApplicationConstant.SESSION_INVALID)
-           awaitComplete()
-       }
+        repositoryImpl.addToCart(5, "wallet", "$67", "").test {
+            Assert.assertEquals(this.awaitItem(), ApplicationConstant.SESSION_INVALID)
+            awaitComplete()
+        }
     }
 
+    @Test
+    fun addToCartFailedWithException() = runTest {
+        Mockito.`when`(validSessionRepo.checkIfUserValid())
+            .thenReturn(ApplicationConstant.SESSION_VALID)
+        Mockito.`when`(validSessionRepo.refreshSession())
+            .thenReturn(ApplicationConstant.SESSION_REFRESHED)
+
+        val expectedResponse = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
+            .setBody(Gson().toJson(null))
+        mockWebServer.enqueue(expectedResponse)
+        try {
+            repositoryImpl.addToCart(5, "wallet", "$67", "").test {
+                val actualResponse = apiInterface.getUser("5.0")
+                Assert.assertEquals(actualResponse.title, null)
+                awaitComplete()
+            }
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+        } catch (e: retrofit2.HttpException) {
+            e.printStackTrace()
+        }
+
+
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @After

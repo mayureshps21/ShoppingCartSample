@@ -13,19 +13,35 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface,
-                                                  val context: Context,
-                                                  val validSessionRepo: ValidSessionRepo,
-                                                  var sharedPreferences: SharedPreferences) :
-    BaseRepository(apiInterface), AddToCartRepository ,ValidSessionRepo{
-    var editor= sharedPreferences.edit()
+class AddToCartRepositoryImpl @Inject constructor(
+    val apiInterface: ApiInterface,
+    val context: Context,
+    val validSessionRepo: ValidSessionRepo,
+    var sharedPreferences: SharedPreferences
+) :
+    BaseRepository(apiInterface), AddToCartRepository, ValidSessionRepo {
+    var editor = sharedPreferences.edit()
+    val flow = flow {
+        //check session is valid or not
+        if (checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(
+                ApplicationConstant.SESSION_REFRESHED
+            )
+        ) {
+            with( apiInterface.getUser("3")){
+                emit(ApplicationConstant.ITEM_ADDED)
+            }
+        } else {
+            emit(ApplicationConstant.SESSION_INVALID)
+        }
 
-    private fun addToCartLocally(id:Int,product:String,amount:String,address:String) {
-        editor.apply{
-            putInt("item_id",id)
-            putString("product",product)
-            putString("amount",amount)
-            putString("address",address)
+    }.flowOn(IO)
+
+    private fun addToCartLocally(id: Int, product: String, amount: String, address: String) {
+        editor.apply {
+            putInt("item_id", id)
+            putString("product", product)
+            putString("amount", amount)
+            putString("address", address)
         }.apply()
     }
 
@@ -34,24 +50,12 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
         product: String,
         amount: String,
         address: String
-    ): Flow<String> = flow {
-        //check session is valid or not
-        if(checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(ApplicationConstant.SESSION_REFRESHED)){
-            apiInterface.getUser("3").also {
-                println(it.userId)
-            }
-            addToCartLocally(id,product,amount,address)
-            emit(ApplicationConstant.ITEM_ADDED)
-        }else{
-            emit(ApplicationConstant.SESSION_INVALID)
+    ): Flow<String> = flow
 
-        }
 
-    }.flowOn(IO)
-
-    override fun checkIfUserValid():String{
+    override fun checkIfUserValid(): String {
         return validSessionRepo.checkIfUserValid()
     }
 
-    override fun refreshSession():String =validSessionRepo.refreshSession()
+    override fun refreshSession(): String = validSessionRepo.refreshSession()
 }
