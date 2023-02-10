@@ -1,19 +1,24 @@
 package com.kotlin.mvvm.data.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.mvvm_demo.mvvm.BaseRepository
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.domain.repository.AddToCartRepository
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
 import com.kotlin.mvvm.utils.ApplicationConstant
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context,val validSessionRepo: ValidSessionRepo) :
+class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface,
+                                                  val context: Context,
+                                                  val validSessionRepo: ValidSessionRepo,
+                                                  var sharedPreferences: SharedPreferences) :
     BaseRepository(apiInterface), AddToCartRepository ,ValidSessionRepo{
-    val sharedPreferences = context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
-    val editor= sharedPreferences.edit()
+    var editor= sharedPreferences.edit()
 
     private fun addToCartLocally(id:Int,product:String,amount:String,address:String) {
         editor.apply{
@@ -42,7 +47,7 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
 
         }
 
-    }
+    }.flowOn(IO)
 
     override fun checkIfUserValid():String{
         return validSessionRepo.checkIfUserValid()
