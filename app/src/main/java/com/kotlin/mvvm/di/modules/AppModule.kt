@@ -6,6 +6,7 @@ import com.kotlin.mvvm.data.api.AddCookiesInterceptor
 import com.kotlin.mvvm.utils.ApplicationConstant
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.data.api.ReceivedCookiesInterceptor
+import com.kotlin.mvvm.data.api.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +21,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 /**
- * Created by Waheed on 04,November,2019
- * Migrated to Hilt 20, June, 2021
+ * App Module dependencies
  */
 
 @Module
@@ -41,6 +41,7 @@ object AppModule {
     fun provideOkHttpClient(logging: HttpLoggingInterceptor,@ApplicationContext context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(RetryInterceptor())
             .addInterceptor(ReceivedCookiesInterceptor(context))
             .addInterceptor(AddCookiesInterceptor(context))
             .connectTimeout(15, TimeUnit.SECONDS)
