@@ -3,7 +3,6 @@ package com.kotlin.mvvm.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlin.mvvm.domain.useCase.AddItemToCartUseCase
-import com.kotlin.mvvm.domain.useCase.ValidUserSessionUsecase
 import com.kotlin.mvvm.ui.viewState.AddItemToCartState
 import com.kotlin.mvvm.utils.ApplicationConstant
 import dagger.hilt.android.lifecycle.HiltViewModel
