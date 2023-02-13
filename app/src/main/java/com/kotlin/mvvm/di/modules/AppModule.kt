@@ -2,11 +2,15 @@ package com.kotlin.mvvm.di.modules
 
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.room.Room
 import com.kotlin.mvvm.data.api.AddCookiesInterceptor
 import com.kotlin.mvvm.utils.ApplicationConstant
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.data.api.ReceivedCookiesInterceptor
 import com.kotlin.mvvm.data.api.RetryInterceptor
+import com.kotlin.mvvm.data.local.AppDatabase
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,5 +77,27 @@ object AppModule {
     @Provides
     fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
+    /**
+     * Provides app AppDatabase
+     */
+    @Singleton
+    @Provides
+    fun provideDb(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "costco-db")
+            .fallbackToDestructiveMigration().build()
 
+    /**
+     * Provides Preferences object with MODE_PRIVATE
+     */
+    @Singleton
+    @Provides
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
+
+    /**
+     * Provides ShoppingCartDao an object to access Shopping Cart table from Database
+     */
+    @Singleton
+    @Provides
+    fun provideCountriesDao(db: AppDatabase): ShoppingCartDao = db.shoppingCartDao()
 }

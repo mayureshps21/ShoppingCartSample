@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
 
-
+@ExperimentalCoroutinesApi
 class AddToCartViewModelTest {
 
     private lateinit var viewModel: AddToCartViewModel

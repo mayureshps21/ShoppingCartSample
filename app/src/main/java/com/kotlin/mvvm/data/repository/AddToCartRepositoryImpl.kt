@@ -3,25 +3,31 @@ package com.kotlin.mvvm.data.repository
 import android.content.Context
 import com.example.mvvm_demo.mvvm.BaseRepository
 import com.kotlin.mvvm.data.api.ApiInterface
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCart
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import com.kotlin.mvvm.domain.repository.AddToCartRepository
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
+import com.kotlin.mvvm.utils.AppExecutors
 import com.kotlin.mvvm.utils.ApplicationConstant
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context,val validSessionRepo: ValidSessionRepo) :
+class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context,val validSessionRepo: ValidSessionRepo, val shoppingCartDao: ShoppingCartDao,private val appExecutors: AppExecutors = AppExecutors()) :
     BaseRepository(apiInterface), AddToCartRepository ,ValidSessionRepo{
-    val sharedPreferences = context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
-    val editor= sharedPreferences.edit()
+
 
     private fun addToCartLocally(id:Int,product:String,amount:String,address:String) {
-        editor.apply{
-            putInt("item_id",id)
-            putString("product",product)
-            putString("amount",amount)
-            putString("address",address)
-        }.apply()
+        appExecutors.diskIO().execute {
+            shoppingCartDao.insertItems(ShoppingCart(item_id = id, product = product, amount = amount, address = address))
+        }
+    }
+
+    private fun removeAllCartItems(){
+        appExecutors.diskIO().execute {
+            shoppingCartDao.deleteAllItems()
+        }
     }
 
     override fun addToCart(
@@ -38,6 +44,7 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
             addToCartLocally(id,product,amount,address)
             emit(ApplicationConstant.ITEM_ADDED)
         }else{
+            removeAllCartItems()
             emit(ApplicationConstant.SESSION_INVALID)
 
         }
