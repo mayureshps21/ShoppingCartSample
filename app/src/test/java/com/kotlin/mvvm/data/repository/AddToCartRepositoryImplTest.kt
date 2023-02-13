@@ -72,7 +72,6 @@ class AddToCartRepositoryImplTest {
 
         repositoryImpl =
             AddToCartRepositoryImpl(apiInterface, context, validSessionRepo, sharedPreferences,shoppingCartDao)
-        repositoryImpl.sharedPreferences = sharedPreferences
 
     }
 

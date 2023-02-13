@@ -8,17 +8,17 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import javax.inject.Inject
 
 
-class AddCookiesInterceptor(val context: Context) : Interceptor {
+class AddCookiesInterceptor @Inject constructor(val sharedPreferences: SharedPreferences) : Interceptor {
 
-    lateinit var sharedPreferences: SharedPreferences
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder: Request.Builder = chain.request().newBuilder()
         builder.addHeader("Accept","application/json")
-        sharedPreferences = context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
+//        sharedPreferences = context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
         sharedPreferences.getStringSet(ApplicationConstant.COOKIES,HashSet())?.let {
             for (cookie in sharedPreferences.getStringSet(ApplicationConstant.COOKIES,HashSet())!!) {
 

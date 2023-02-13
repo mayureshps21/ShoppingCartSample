@@ -42,12 +42,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(logging: HttpLoggingInterceptor,@ApplicationContext context: Context): OkHttpClient {
+    fun provideOkHttpClient(logging: HttpLoggingInterceptor,sharedPreferences: SharedPreferences): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(RetryInterceptor())
-            .addInterceptor(ReceivedCookiesInterceptor(context))
-            .addInterceptor(AddCookiesInterceptor(context))
+            .addInterceptor(ReceivedCookiesInterceptor(sharedPreferences))
+            .addInterceptor(AddCookiesInterceptor(sharedPreferences))
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -67,13 +67,9 @@ object AppModule {
             .build()
     }
 
-  /*  val networkRequests = module {
-        single { provideApiInterface(get()) }
-    }*/
-
-   /* private fun provideLoginService(retrofit: Retrofit): ApiInterface =
-        retrofit.create(ApiInterface::class.java)*/
-
+    /**
+     * Provide network API call service
+     */
     @Provides
     fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
@@ -85,14 +81,6 @@ object AppModule {
     fun provideDb(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "costco-db")
             .fallbackToDestructiveMigration().build()
-
-    /**
-     * Provides Preferences object with MODE_PRIVATE
-     */
-//    @Singleton
-//    @Provides
-//    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences =
-//        context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
 
     /**
      * Provides ShoppingCartDao an object to access Shopping Cart table from Database

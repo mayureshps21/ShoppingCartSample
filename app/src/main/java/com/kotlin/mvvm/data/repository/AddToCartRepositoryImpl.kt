@@ -20,13 +20,18 @@ import javax.inject.Inject
 class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context, val validSessionRepo: ValidSessionRepo, var sharedPreferences: SharedPreferences, val shoppingCartDao: ShoppingCartDao, private val appExecutors: AppExecutors = AppExecutors()) :
     BaseRepository(apiInterface), AddToCartRepository ,ValidSessionRepo{
 
-
+    /**
+     * Shopping Cart Item updated in database
+     */
     private fun addToCartLocally(id:Int,product:String,amount:String,address:String) {
         appExecutors.diskIO().execute {
             shoppingCartDao.insertItems(ShoppingCart(item_id = id, product = product, amount = amount, address = address))
         }
     }
 
+    /**
+     * Remove items form shopping cart
+     */
     private fun removeAllCartItems(){
         appExecutors.diskIO().execute {
             shoppingCartDao.deleteAllItems()
