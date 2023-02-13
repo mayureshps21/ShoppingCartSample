@@ -89,7 +89,7 @@ class AddToCartRepositoryImplTest {
             awaitComplete()
         }
         val actualResponse = apiInterface.getUser("5")
-        Assert.assertEquals(actualResponse.title, "Abhay")
+        Assert.assertEquals(actualResponse.body()?.title, "Abhay")
 
 
     }
@@ -120,7 +120,7 @@ class AddToCartRepositoryImplTest {
         try {
             repositoryImpl.addToCart(5, "wallet", "$67", "").test {
                 val actualResponse = apiInterface.getUser("5.0")
-                Assert.assertEquals(actualResponse.title, null)
+                Assert.assertEquals(actualResponse.body()?.title, null)
                 awaitComplete()
             }
         } catch (e: SocketTimeoutException) {
