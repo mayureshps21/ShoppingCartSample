@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context,val validSessionRepo: ValidSessionRepo, val shoppingCartDao: ShoppingCartDao,private val appExecutors: AppExecutors = AppExecutors()) :
+class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface, val context: Context, val validSessionRepo: ValidSessionRepo, var sharedPreferences: SharedPreferences, val shoppingCartDao: ShoppingCartDao, private val appExecutors: AppExecutors = AppExecutors()) :
     BaseRepository(apiInterface), AddToCartRepository ,ValidSessionRepo{
 
 
@@ -38,7 +38,19 @@ class AddToCartRepositoryImpl @Inject constructor(val apiInterface: ApiInterface
         product: String,
         amount: String,
         address: String
-    ): Flow<String> = flow
+    ): Flow<String> = flow{
+            //check session is valid or not
+            if(checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(ApplicationConstant.SESSION_REFRESHED)){
+                apiInterface.getUser("3").also {
+                    println(it.userId)
+                }
+                addToCartLocally(id,product,amount,address)
+                emit(ApplicationConstant.ITEM_ADDED)
+            }else {
+                removeAllCartItems()
+                emit(ApplicationConstant.SESSION_INVALID)
+            }
+    }
 
 
     override fun checkIfUserValid(): String {

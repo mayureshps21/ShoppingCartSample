@@ -7,6 +7,7 @@ import app.cash.turbine.test
 import com.google.gson.Gson
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.data.dto.UserDto
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
 import com.kotlin.mvvm.utils.ApplicationConstant
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,9 @@ class AddToCartRepositoryImplTest {
     @Mock
     lateinit var sharedPreferences: SharedPreferences
 
+    @Mock
+    lateinit var shoppingCartDao: ShoppingCartDao
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun SetUp() {
@@ -67,7 +71,7 @@ class AddToCartRepositoryImplTest {
 
 
         repositoryImpl =
-            AddToCartRepositoryImpl(apiInterface, context, validSessionRepo, sharedPreferences)
+            AddToCartRepositoryImpl(apiInterface, context, validSessionRepo, sharedPreferences,shoppingCartDao)
         repositoryImpl.sharedPreferences = sharedPreferences
 
     }

@@ -18,7 +18,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 class RepositoryModule {
     @Provides
-     fun provideAddToCartRepository(apiInterface: ApiInterface,@ApplicationContext context: Context,validSessionRepo: ValidSessionRepo, shoppingCartDao: ShoppingCartDao): AddToCartRepository=AddToCartRepositoryImpl(apiInterface, context,validSessionRepo,shoppingCartDao)
+     fun provideAddToCartRepository(apiInterface: ApiInterface,@ApplicationContext context: Context,validSessionRepo: ValidSessionRepo, sharedPreferences: SharedPreferences, shoppingCartDao: ShoppingCartDao): AddToCartRepository=AddToCartRepositoryImpl(apiInterface, context,validSessionRepo,sharedPreferences,shoppingCartDao)
 
     @Provides
      fun provideValidSessionRepository(apiInterface: ApiInterface): ValidSessionRepo=ValidSessionRepoImpl(apiInterface)

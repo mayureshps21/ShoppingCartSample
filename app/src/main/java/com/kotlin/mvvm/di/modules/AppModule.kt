@@ -89,15 +89,15 @@ object AppModule {
     /**
      * Provides Preferences object with MODE_PRIVATE
      */
-    @Singleton
-    @Provides
-    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences =
-        context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
+//    @Singleton
+//    @Provides
+//    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences =
+//        context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
 
     /**
      * Provides ShoppingCartDao an object to access Shopping Cart table from Database
      */
     @Singleton
     @Provides
-    fun provideCountriesDao(db: AppDatabase): ShoppingCartDao = db.shoppingCartDao()
+    fun provideShoppingCartDao(db: AppDatabase): ShoppingCartDao = db.shoppingCartDao()
 }
