@@ -27,9 +27,9 @@ class AddToCartRepositoryImpl @Inject constructor(
                 ApplicationConstant.SESSION_REFRESHED
             )
         ) {
-            with( apiInterface.getUser("3")){
+            safeApiCall { apiInterface.getUser("3") }
                 emit(ApplicationConstant.ITEM_ADDED)
-            }
+
         } else {
             emit(ApplicationConstant.SESSION_INVALID)
         }
