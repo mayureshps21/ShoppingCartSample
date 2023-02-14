@@ -7,7 +7,9 @@ import app.cash.turbine.test
 import com.google.gson.Gson
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.data.dto.UserDto
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
+import com.kotlin.mvvm.utils.AppExecutors
 import com.kotlin.mvvm.utils.ApplicationConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,6 +24,7 @@ import org.junit.*
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
@@ -49,6 +52,12 @@ class AddToCartRepositoryImplTest {
     @Mock
     lateinit var sharedPreferences: SharedPreferences
 
+    @Mock
+    lateinit var shoppingCartDao: ShoppingCartDao
+
+    @Mock
+    lateinit var appExecutors: AppExecutors
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun SetUp() {
@@ -67,8 +76,7 @@ class AddToCartRepositoryImplTest {
 
 
         repositoryImpl =
-            AddToCartRepositoryImpl(apiInterface, context, validSessionRepo, sharedPreferences)
-        repositoryImpl.sharedPreferences = sharedPreferences
+            AddToCartRepositoryImpl(apiInterface, context, validSessionRepo,shoppingCartDao,appExecutors)
 
     }
 

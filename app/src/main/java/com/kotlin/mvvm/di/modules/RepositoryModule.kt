@@ -6,6 +6,7 @@ import com.kotlin.mvvm.data.repository.AddToCartRepositoryImpl
 import com.kotlin.mvvm.domain.repository.AddToCartRepository
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
 import com.kotlin.mvvm.data.api.ApiInterface
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import com.kotlin.mvvm.data.repository.ValidSessionRepoImpl
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 class RepositoryModule {
     @Provides
-     fun provideAddToCartRepository(apiInterface: ApiInterface,@ApplicationContext context: Context,validSessionRepo: ValidSessionRepo,sharedPreferences: SharedPreferences): AddToCartRepository=AddToCartRepositoryImpl(apiInterface, context,validSessionRepo,sharedPreferences)
+     fun provideAddToCartRepository(apiInterface: ApiInterface,@ApplicationContext context: Context,validSessionRepo: ValidSessionRepo,  shoppingCartDao: ShoppingCartDao): AddToCartRepository=AddToCartRepositoryImpl(apiInterface, context,validSessionRepo,shoppingCartDao)
 
     @Provides
      fun provideValidSessionRepository(apiInterface: ApiInterface): ValidSessionRepo=ValidSessionRepoImpl(apiInterface)

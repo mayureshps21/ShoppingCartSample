@@ -2,11 +2,15 @@ package com.kotlin.mvvm.di.modules
 
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.room.Room
 import com.kotlin.mvvm.data.api.AddCookiesInterceptor
 import com.kotlin.mvvm.utils.ApplicationConstant
 import com.kotlin.mvvm.data.api.ApiInterface
 import com.kotlin.mvvm.data.api.ReceivedCookiesInterceptor
 import com.kotlin.mvvm.data.api.RetryInterceptor
+import com.kotlin.mvvm.data.local.AppDatabase
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,12 +42,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(logging: HttpLoggingInterceptor,@ApplicationContext context: Context): OkHttpClient {
+    fun provideOkHttpClient(logging: HttpLoggingInterceptor,sharedPreferences: SharedPreferences): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(RetryInterceptor())
-            .addInterceptor(ReceivedCookiesInterceptor(context))
-            .addInterceptor(AddCookiesInterceptor(context))
+            .addInterceptor(ReceivedCookiesInterceptor(sharedPreferences))
+            .addInterceptor(AddCookiesInterceptor(sharedPreferences))
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -63,15 +67,25 @@ object AppModule {
             .build()
     }
 
-  /*  val networkRequests = module {
-        single { provideApiInterface(get()) }
-    }*/
-
-   /* private fun provideLoginService(retrofit: Retrofit): ApiInterface =
-        retrofit.create(ApiInterface::class.java)*/
-
+    /**
+     * Provide network API call service
+     */
     @Provides
     fun provideApiInterface(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
+    /**
+     * Provides app AppDatabase
+     */
+    @Singleton
+    @Provides
+    fun provideDb(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "costco-db")
+            .fallbackToDestructiveMigration().build()
 
+    /**
+     * Provides ShoppingCartDao an object to access Shopping Cart table from Database
+     */
+    @Singleton
+    @Provides
+    fun provideShoppingCartDao(db: AppDatabase): ShoppingCartDao = db.shoppingCartDao()
 }

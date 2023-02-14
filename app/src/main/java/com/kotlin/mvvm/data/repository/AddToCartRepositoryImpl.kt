@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.mvvm_demo.mvvm.BaseRepository
 import com.kotlin.mvvm.data.api.ApiInterface
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCart
+import com.kotlin.mvvm.data.local.shoppingcart.ShoppingCartDao
 import com.kotlin.mvvm.domain.repository.AddToCartRepository
 import com.kotlin.mvvm.domain.repository.ValidSessionRepo
+import com.kotlin.mvvm.utils.AppExecutors
 import com.kotlin.mvvm.utils.ApplicationConstant
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,32 +20,27 @@ class AddToCartRepositoryImpl @Inject constructor(
     val apiInterface: ApiInterface,
     val context: Context,
     val validSessionRepo: ValidSessionRepo,
-    var sharedPreferences: SharedPreferences
+    val shoppingCartDao: ShoppingCartDao,
+    private val appExecutors: AppExecutors = AppExecutors()
 ) :
     BaseRepository(apiInterface), AddToCartRepository, ValidSessionRepo {
-    var editor = sharedPreferences.edit()
-    val flow = flow {
-        //check session is valid or not
-        if (checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(
-                ApplicationConstant.SESSION_REFRESHED
-            )
-        ) {
-            safeApiCall { apiInterface.getUser("3") }
-                emit(ApplicationConstant.ITEM_ADDED)
 
-        } else {
-            emit(ApplicationConstant.SESSION_INVALID)
+    /**
+     * Shopping Cart Item updated in database
+     */
+    private fun addToCartLocally(id:Int,product:String,amount:String,address:String) {
+        appExecutors.diskIO().execute {
+            shoppingCartDao.insertItems(ShoppingCart(item_id = id, product = product, amount = amount, address = address))
         }
+    }
 
-    }.flowOn(IO)
-
-    private fun addToCartLocally(id: Int, product: String, amount: String, address: String) {
-        editor.apply {
-            putInt("item_id", id)
-            putString("product", product)
-            putString("amount", amount)
-            putString("address", address)
-        }.apply()
+    /**
+     * Remove items form shopping cart
+     */
+    private fun removeAllCartItems(){
+        appExecutors.diskIO().execute {
+            shoppingCartDao.deleteAllItems()
+        }
     }
 
     override fun addToCart(
@@ -50,7 +48,18 @@ class AddToCartRepositoryImpl @Inject constructor(
         product: String,
         amount: String,
         address: String
-    ): Flow<String> = flow
+    ): Flow<String> = flow {
+        //check session is valid or not
+        if (checkIfUserValid().equals(ApplicationConstant.SESSION_VALID) || refreshSession().equals(
+                ApplicationConstant.SESSION_REFRESHED
+            )
+        ) {
+           safeApiCall { apiInterface.getUser("3") }
+                emit(ApplicationConstant.ITEM_ADDED)
+        } else {
+            emit(ApplicationConstant.SESSION_INVALID)
+        }
+    }.flowOn(Dispatchers.IO)
 
 
     override fun checkIfUserValid(): String {
